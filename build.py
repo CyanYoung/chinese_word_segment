@@ -2,6 +2,7 @@ import json
 import pickle as pk
 
 import nltk
+from nltk import ELEProbDist
 
 from gensim.models import Word2Vec
 
@@ -30,9 +31,11 @@ def fit(path_train, path_cpd, train):
     if train:
         word2vec(sents)
     all_words = ' '.join(sents).split()
-    bgs = list(nltk.bigrams(all_words))
-    cfd = nltk.ConditionalFreqDist(bgs)
-    print()
+    bigrams = list(nltk.ngrams(all_words, 2))
+    cfd = nltk.ConditionalFreqDist(bigrams)
+    cpd = nltk.ConditionalProbDist(cfd, ELEProbDist)
+    with open(path_cpd, 'wb') as f:
+        pk.dump(cpd, f)
 
 
 if __name__ == '__main__':
