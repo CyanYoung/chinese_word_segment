@@ -46,8 +46,8 @@ def statistic(path_train):
         texts = json.load(f)
     all_words = ' '.join(texts).split()
     text_lens = [len(text.split()) for text in texts]
-    bgs = list(nltk.bigrams(all_words))
-    tgs = list(nltk.trigrams(all_words))
+    bgs = list(nltk.ngrams(all_words, 2))
+    tgs = list(nltk.ngrams(all_words, 3))
     count(path_vocab_freq, all_words, 'vocab')
     count(path_len_freq, text_lens, 'text_len')
     count(path_bigram_freq, bgs, 'bigram')
