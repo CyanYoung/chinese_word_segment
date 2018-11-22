@@ -2,7 +2,7 @@ import json
 import pickle as pk
 
 import nltk
-from nltk import ELEProbDist
+from nltk import MLEProbDist
 
 from gensim.models import Word2Vec
 
@@ -33,7 +33,7 @@ def fit(path_train, path_cpd, train):
     all_words = ' '.join(sents).split()
     bigrams = list(nltk.ngrams(all_words, 2))
     cfd = nltk.ConditionalFreqDist(bigrams)
-    cpd = nltk.ConditionalProbDist(cfd, ELEProbDist)
+    cpd = nltk.ConditionalProbDist(cfd, MLEProbDist)
     with open(path_cpd, 'wb') as f:
         pk.dump(cpd, f)
 
