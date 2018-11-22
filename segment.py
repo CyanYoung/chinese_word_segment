@@ -3,6 +3,18 @@ import pickle as pk
 
 import nltk
 
+import math
+
+from util import map_item
+
+
+def divide_smooth(cond, word):
+    pass
+
+
+def neural_smooth(cond, word):
+    pass
+
 
 path_vocab_freq = 'stat/vocab_freq.json'
 path_cpd = 'feat/cpd.pkl'
@@ -13,6 +25,9 @@ with open(path_cpd, 'rb') as f:
     cpd = pk.load(f)
 with open(path_word_vec, 'rb') as f:
     word_vec = pk.load(f)
+
+funcs = {'divide': divide_smooth,
+         'neural': neural_smooth}
 
 
 def for_match(sent, max_len):
@@ -53,8 +68,17 @@ def back_match(sent, max_len):
     return list(reversed(words))
 
 
-def get_prob(words):
-    pass
+def get_log(words, name):
+    smooth = map_item(name, funcs)
+    bigrams = list(nltk.ngrams(words, 2))
+    log_sum = 0
+    for cond, word in bigrams:
+        prob = cpd[cond].prob(word)
+        if prob > 0:
+            log_sum = log_sum + math.log(prob)
+        else:
+            log_sum = log_sum + smooth(cond, word)
+    return log_sum
 
 
 def predict(text, name, max_len):
@@ -63,16 +87,15 @@ def predict(text, name, max_len):
     if word1s == word2s:
         return ' '.join(word1s)
     else:
-        sent1_prob, sent2_prob = get_prob(word1s), get_prob(word2s)
-        if sent1_prob > sent2_prob:
+        sent1_log, sent2_log = get_log(word1s, name), get_log(word2s, name)
+        if sent1_log > sent2_log:
             return ' '.join(word1s)
         else:
             return ' '.join(word2s)
 
 
-
 if __name__ == '__main__':
     while True:
         text = input('text: ')
-        print('const:  %s' % predict(text, 'const', max_len=7))
+        print('divide: %s' % predict(text, 'divide', max_len=7))
         print('neural: %s' % predict(text, 'neural', max_len=7))

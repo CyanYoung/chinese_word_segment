@@ -25,7 +25,7 @@ def word2vec(sents, path_word_vec):
             print(word_vecs.most_similar(word))
 
 
-def fit(path_train, path_cpd, train):
+def fit(path_train, path_cfd, path_cpd, train):
     with open(path_train, 'r') as f:
         sents = json.load(f)
     if train:
@@ -34,11 +34,14 @@ def fit(path_train, path_cpd, train):
     bigrams = list(nltk.ngrams(all_words, 2))
     cfd = nltk.ConditionalFreqDist(bigrams)
     cpd = nltk.ConditionalProbDist(cfd, MLEProbDist)
+    with open(path_cfd, 'wb') as f:
+        pk.dump(cfd, f)
     with open(path_cpd, 'wb') as f:
         pk.dump(cpd, f)
 
 
 if __name__ == '__main__':
     path_train = 'data/train.json'
+    path_cfd = 'feat/cfd.pkl'
     path_cpd = 'feat/cpd.pkl'
-    fit(path_train, path_cpd, train=False)
+    fit(path_train, path_cfd, path_cpd, train=False)
