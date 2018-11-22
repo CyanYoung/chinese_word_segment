@@ -10,8 +10,9 @@ import matplotlib.pyplot as plt
 
 
 path_vocab_freq = 'stat/vocab_freq.json'
-path_bigram_freq = 'stat/bigram_freq.json'
 path_len_freq = 'stat/len_freq.json'
+path_bigram_freq = 'stat/bigram_freq.json'
+path_trigram_freq = 'stat/trigram_freq.json'
 
 plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.family'] = ['Arial Unicode MS']
@@ -23,8 +24,8 @@ def count(path_freq, items, field):
     sort_freqs = [freq for item, freq in pairs.most_common()]
     item_freq = dict()
     for item, freq in zip(sort_items, sort_freqs):
-        if field == 'bigram':
-            item = '{}, {}'.format(item[0], item[1])
+        if field[-4:] == 'gram':
+            item = ', '.join(item)
         item_freq[item] = freq
     with open(path_freq, 'w') as f:
         json.dump(item_freq, f, ensure_ascii=False, indent=4)
@@ -44,11 +45,13 @@ def statistic(path_train):
     with open(path_train, 'r') as f:
         texts = json.load(f)
     all_words = ' '.join(texts).split()
-    bigrams = list(nltk.bigrams(all_words))
     text_lens = [len(text.split()) for text in texts]
+    bgs = list(nltk.bigrams(all_words))
+    tgs = list(nltk.trigrams(all_words))
     count(path_vocab_freq, all_words, 'vocab')
-    count(path_bigram_freq, bigrams, 'bigram')
     count(path_len_freq, text_lens, 'text_len')
+    count(path_bigram_freq, bgs, 'bigram')
+    count(path_trigram_freq, tgs, 'trigram')
 
 
 if __name__ == '__main__':
