@@ -8,23 +8,52 @@ import math
 from util import map_item
 
 
-def divide_smooth(cond, word):
-    pass
+def divide_smooth(cond):
+    if cond not in cfd:
+        prob = 1 / len(cfd)
+    else:
+        prob = 1 / sum(cfd[cond].values())
+    return prob
 
 
-def neural_smooth(cond, word):
-    pass
+def neural_smooth(cond, word, cand, depth, thre):
+    if depth > thre:
+        return divide_smooth(cond)
+    if cond not in cfd:
+        cond_subs = word_vecs.most_similar(cond)[:cand]
+        cond_flag = False
+        for cond_sub in cond_subs:
+            if cond_sub in cfd:
+                cond, cond_flag = cond_sub, True
+                break
+        if not cond_flag:
+            return divide_smooth(cond)
+        else:
+            neural_smooth(cond, word, cand, depth + 1, thre)
+    if word not in cfd[cond]:
+        word_subs = word_vecs.most_similar(word)[:cand]
+        word_flag = False
+        for word_sub in word_subs:
+            if word_sub in cfd[cond]:
+                word, word_flag = word_sub, True
+                break
+        if not word_flag:
+            return divide_smooth(cond)
+    return cpd[cond].prob(word)
 
 
 path_vocab_freq = 'stat/vocab_freq.json'
+path_cfd = 'feat/cfd.pkl'
 path_cpd = 'feat/cpd.pkl'
 path_word_vec = 'feat/word_vec.pkl'
 with open(path_vocab_freq, 'rb') as f:
     vocabs = json.load(f)
+with open(path_cfd, 'rb') as f:
+    cfd = pk.load(f)
 with open(path_cpd, 'rb') as f:
     cpd = pk.load(f)
 with open(path_word_vec, 'rb') as f:
-    word_vec = pk.load(f)
+    word_vecs = pk.load(f)
 
 funcs = {'divide': divide_smooth,
          'neural': neural_smooth}
@@ -74,11 +103,13 @@ def get_log(words, name):
     log_sum = 0
     for cond, word in bigrams:
         prob = cpd[cond].prob(word)
-        if prob > 0:
-            log_sum = log_sum + math.log(prob)
-        else:
-            log_sum = log_sum + smooth(cond, word)
-    return log_sum
+        if prob == 0.0:
+            if name == 'neural':
+                prob = smooth(cond, word, cand=5, depth=1, thre=3)
+            else:
+                prob = smooth(cond)
+        log_sum = log_sum + math.log(prob)
+    return log_sum / len(words)
 
 
 def predict(text, name, max_len):
