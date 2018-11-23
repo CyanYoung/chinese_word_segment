@@ -5,10 +5,10 @@ from segment import predict
 
 max_len = 7
 
-path_test = 'data/test.json'
-path_label = 'data/label.json'
-with open(path_test, 'rb') as f:
-    texts = json.load(f)
+path_sent = 'data/test_sent.json'
+path_label = 'data/test_label.json'
+with open(path_sent, 'rb') as f:
+    sents = json.load(f)
 with open(path_label, 'rb') as f:
     labels = json.load(f)
 
@@ -21,10 +21,10 @@ def get_cut_ind(text):
     return inds
 
 
-def test(name, texts, labels):
+def test(name, sents, labels):
     count, pred_num, label_num = [0] * 3
-    for text, label in zip(texts, labels):
-        pred = predict(text, name, max_len)
+    for sent, label in zip(sents, labels):
+        pred = predict(sent, name, max_len)
         pred_inds, label_inds = get_cut_ind(pred), get_cut_ind(label)
         for pred_ind in pred_inds:
             if pred_ind in label_inds:
@@ -37,5 +37,5 @@ def test(name, texts, labels):
 
 
 if __name__ == '__main__':
-    test('divide', texts, labels)
-    test('neural', texts, labels)
+    test('divide', sents, labels)
+    test('neural', sents, labels)

@@ -16,7 +16,7 @@ def clean(text):
     return re.sub('/\S+', '', text)
 
 
-def prepare(path_univ, path_train, path_test, path_label):
+def prepare(path_univ, path_train, path_test_sent, path_test_label):
     texts = list()
     with open(path_univ, 'r') as f:
         for line in f:
@@ -26,18 +26,18 @@ def prepare(path_univ, path_train, path_test, path_label):
                 texts.append(text)
     shuffle(texts)
     bound = int(len(texts) * 0.9)
-    train_texts, labels = texts[:bound], texts[bound:]
-    test_texts = list()
-    for label in labels:
-        test_texts.append(re.sub(' ', '', label))
-    save(path_train, train_texts)
-    save(path_label, labels)
-    save(path_test, test_texts)
+    train_sents, test_labels = texts[:bound], texts[bound:]
+    test_sents = list()
+    for label in test_labels:
+        test_sents.append(re.sub(' ', '', label))
+    save(path_train, train_sents)
+    save(path_test_sent, test_sents)
+    save(path_test_label, test_labels)
 
 
 if __name__ == '__main__':
     path_univ = 'data/univ.txt'
     path_train = 'data/train.json'
-    path_test = 'data/test.json'
-    path_label = 'data/label.json'
-    prepare(path_univ, path_train, path_test, path_label)
+    path_test_sent = 'data/test_sent.json'
+    path_test_label = 'data/test_label.json'
+    prepare(path_univ, path_train, path_test_sent, path_test_label)
