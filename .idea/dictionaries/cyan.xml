@@ -6,6 +6,9 @@
       <w>cand</w>
       <w>freqs</w>
       <w>inds</w>
+      <w>prec</w>
+      <w>pred</w>
+      <w>preds</w>
       <w>preprocess</w>
       <w>pycache</w>
       <w>sents</w>
