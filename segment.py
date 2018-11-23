@@ -16,8 +16,8 @@ def divide_smooth(cond):
     return prob
 
 
-def neural_smooth(cond, word, cand, depth, thre):
-    if depth > thre:
+def neural_smooth(cond, word, cand):
+    if cond not in word_vecs or word not in word_vecs:
         return divide_smooth(cond)
     if cond not in cfd:
         cond_subs = word_vecs.most_similar(cond)[:cand]
@@ -29,7 +29,7 @@ def neural_smooth(cond, word, cand, depth, thre):
         if not cond_flag:
             return divide_smooth(cond)
         else:
-            neural_smooth(cond, word, cand, depth + 1, thre)
+            neural_smooth(cond, word, cand)
     if word not in cfd[cond]:
         word_subs = word_vecs.most_similar(word)[:cand]
         word_flag = False
@@ -57,6 +57,8 @@ with open(path_word_vec, 'rb') as f:
 
 funcs = {'divide': divide_smooth,
          'neural': neural_smooth}
+
+print('江' in cpd)
 
 
 def for_match(sent, max_len):
@@ -105,7 +107,7 @@ def get_log(words, name):
         prob = cpd[cond].prob(word)
         if prob == 0.0:
             if name == 'neural':
-                prob = smooth(cond, word, cand=5, depth=1, thre=3)
+                prob = smooth(cond, word, cand=5)
             else:
                 prob = smooth(cond)
         log_sum = log_sum + math.log(prob)
