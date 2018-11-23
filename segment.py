@@ -42,6 +42,8 @@ def neural_smooth(cond, word, cand):
     return cpd[cond].prob(word)
 
 
+max_len = 7
+
 path_vocab_freq = 'stat/vocab_freq.json'
 path_cfd = 'feat/cfd.pkl'
 path_cpd = 'feat/cpd.pkl'
@@ -128,5 +130,5 @@ def predict(text, name, max_len):
 if __name__ == '__main__':
     while True:
         text = input('text: ')
-        print('divide: %s' % predict(text, 'divide', max_len=7))
-        print('neural: %s' % predict(text, 'neural', max_len=7))
+        print('divide: %s' % predict(text, 'divide', max_len))
+        print('neural: %s' % predict(text, 'neural', max_len))
