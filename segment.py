@@ -58,8 +58,6 @@ with open(path_word_vec, 'rb') as f:
 funcs = {'divide': divide_smooth,
          'neural': neural_smooth}
 
-print('江' in cpd)
-
 
 def for_match(sent, max_len):
     words = list()
