@@ -25,8 +25,6 @@ def test(name, texts, labels):
     count, pred_num, label_num = [0] * 3
     for text, label in zip(texts, labels):
         pred = predict(text, name, max_len)
-        words = label.split()
-        label = ' '.join(words)
         pred_inds, label_inds = get_cut_ind(pred), get_cut_ind(label)
         for pred_ind in pred_inds:
             if pred_ind in label_inds:

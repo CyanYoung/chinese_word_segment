@@ -20,9 +20,10 @@ def prepare(path_univ, path_train, path_test, path_label):
     texts = list()
     with open(path_univ, 'r') as f:
         for line in f:
-            text = line.strip()
+            text = clean(line).strip()
             if text:
-                texts.append(clean(text))
+                text = re.sub('  ', ' ', text)
+                texts.append(text)
     shuffle(texts)
     bound = int(len(texts) * 0.9)
     train_texts, labels = texts[:bound], texts[bound:]
