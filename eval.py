@@ -14,10 +14,11 @@ with open(path_label, 'rb') as f:
 
 
 def get_cut_ind(text):
-    inds = set()
+    inds, count = set(), 0
     for i in range(len(text)):
         if text[i] == ' ':
-            inds.add(i - len(inds))
+            count = count + 1
+            inds.add(i - count)
     return inds
 
 
