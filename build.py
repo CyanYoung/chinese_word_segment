@@ -25,10 +25,10 @@ def word2vec(sents, path_word_vec):
             print(word_vecs.most_similar(word))
 
 
-def fit(path_train, path_cfd, path_cpd, train):
+def fit(path_train, path_cfd, path_cpd, update):
     with open(path_train, 'r') as f:
         sents = json.load(f)
-    if train:
+    if update:
         word2vec(sents, path_word_vec)
     all_words = ' '.join(sents).split()
     bigrams = list(nltk.ngrams(all_words, 2))
@@ -44,4 +44,4 @@ if __name__ == '__main__':
     path_train = 'data/train.json'
     path_cfd = 'feat/cfd.pkl'
     path_cpd = 'feat/cpd.pkl'
-    fit(path_train, path_cfd, path_cpd, train=False)
+    fit(path_train, path_cfd, path_cpd, update=False)
