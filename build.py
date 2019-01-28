@@ -11,6 +11,8 @@ embed_len = 200
 min_freq = 5
 
 path_word_vec = 'feat/word_vec.pkl'
+path_cfd = 'feat/cfd.pkl'
+path_cpd = 'feat/cpd.pkl'
 
 
 def word2vec(sents, path_word_vec):
@@ -25,7 +27,7 @@ def word2vec(sents, path_word_vec):
             print(word_vecs.most_similar(word))
 
 
-def fit(path_train, path_cfd, path_cpd, update):
+def fit(path_train, update):
     with open(path_train, 'r') as f:
         sents = json.load(f)
     if update:
@@ -42,6 +44,4 @@ def fit(path_train, path_cfd, path_cpd, update):
 
 if __name__ == '__main__':
     path_train = 'data/train.json'
-    path_cfd = 'feat/cfd.pkl'
-    path_cpd = 'feat/cpd.pkl'
-    fit(path_train, path_cfd, path_cpd, update=False)
+    fit(path_train, update=False)
