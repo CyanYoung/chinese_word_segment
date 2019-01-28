@@ -8,7 +8,7 @@ import math
 from util import map_item
 
 
-def divide_smooth(cond):
+def divide(cond):
     if cond not in cfd:
         prob = 1 / len(cfd)
     else:
@@ -16,9 +16,9 @@ def divide_smooth(cond):
     return prob
 
 
-def neural_smooth(cond, word, cand):
+def neural(cond, word, cand):
     if cond not in word_vecs or word not in word_vecs:
-        return divide_smooth(cond)
+        return divide(cond)
     if cond not in cfd:
         cond_subs = word_vecs.most_similar(cond)[:cand]
         cond_flag = False
@@ -27,9 +27,9 @@ def neural_smooth(cond, word, cand):
                 cond, cond_flag = cond_sub, True
                 break
         if not cond_flag:
-            return divide_smooth(cond)
+            return divide(cond)
         else:
-            neural_smooth(cond, word, cand)
+            neural(cond, word, cand)
     if word not in cfd[cond]:
         word_subs = word_vecs.most_similar(word)[:cand]
         word_flag = False
@@ -38,7 +38,7 @@ def neural_smooth(cond, word, cand):
                 word, word_flag = word_sub, True
                 break
         if not word_flag:
-            return divide_smooth(cond)
+            return divide(cond)
     return cpd[cond].prob(word)
 
 
@@ -57,8 +57,8 @@ with open(path_cpd, 'rb') as f:
 with open(path_word_vec, 'rb') as f:
     word_vecs = pk.load(f)
 
-funcs = {'divide': divide_smooth,
-         'neural': neural_smooth}
+funcs = {'divide': divide,
+         'neural': neural}
 
 
 def for_match(sent, max_len):
