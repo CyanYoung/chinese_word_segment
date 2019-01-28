@@ -22,7 +22,7 @@ def word2vec(sents, path_word_vec):
     with open(path_word_vec, 'wb') as f:
         pk.dump(model, f)
     if __name__ == '__main__':
-        words = ['几', '元', '日']
+        words = ['几', '元', '天']
         for word in words:
             print(word_vecs.most_similar(word))
 
