@@ -8,7 +8,7 @@ import math
 from util import map_item
 
 
-def divide(cond):
+def plus1(cond):
     if cond not in cfd:
         prob = 1 / len(cfd)
     else:
@@ -16,9 +16,9 @@ def divide(cond):
     return prob
 
 
-def neural(cond, word, cand):
+def embed(cond, word, cand):
     if cond not in word_vecs or word not in word_vecs:
-        return divide(cond)
+        return plus1(cond)
     if cond not in cfd:
         cond_subs = word_vecs.most_similar(cond)[:cand]
         cond_flag = False
@@ -27,9 +27,9 @@ def neural(cond, word, cand):
                 cond, cond_flag = cond_sub, True
                 break
         if not cond_flag:
-            return divide(cond)
+            return plus1(cond)
         else:
-            neural(cond, word, cand)
+            embed(cond, word, cand)
     if word not in cfd[cond]:
         word_subs = word_vecs.most_similar(word)[:cand]
         word_flag = False
@@ -38,7 +38,7 @@ def neural(cond, word, cand):
                 word, word_flag = word_sub, True
                 break
         if not word_flag:
-            return divide(cond)
+            return plus1(cond)
     return cpd[cond].prob(word)
 
 
@@ -57,8 +57,8 @@ with open(path_cpd, 'rb') as f:
 with open(path_word_vec, 'rb') as f:
     word_vecs = pk.load(f)
 
-funcs = {'divide': divide,
-         'neural': neural}
+funcs = {'plus1': plus1,
+         'embed': embed}
 
 
 def for_match(sent, max_len):
@@ -106,7 +106,7 @@ def get_log(words, name):
     for cond, word in bigrams:
         prob = cpd[cond].prob(word)
         if prob == 0.0:
-            if name == 'neural':
+            if name == 'embed':
                 prob = smooth(cond, word, cand=5)
             else:
                 prob = smooth(cond)
@@ -130,5 +130,5 @@ def predict(text, name, max_len):
 if __name__ == '__main__':
     while True:
         text = input('text: ')
-        print('divide: %s' % predict(text, 'divide', max_len))
-        print('neural: %s' % predict(text, 'neural', max_len))
+        print('plus1: %s' % predict(text, 'plus1', max_len))
+        print('embed: %s' % predict(text, 'embed', max_len))
