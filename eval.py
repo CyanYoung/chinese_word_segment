@@ -32,11 +32,11 @@ def test(name, sents, labels):
                 count = count + 1
         pred_num = pred_num + len(pred_inds)
         label_num = label_num + len(label_inds)
-    prec, rec = count / pred_num, count / label_num
-    f1 = 2 * prec * rec / (prec + rec)
-    print('\n%s - prec: %.2f - rec: %.2f - f1: %.2f' % (name, prec, rec, f1))
+    p, r = count / pred_num, count / label_num
+    f1 = 2 * p * r / (p + r)
+    print('\n%s - p: %.2f - r: %.2f - f1: %.2f' % (name, p, r, f1))
 
 
 if __name__ == '__main__':
-    test('divide', sents, labels)
-    test('neural', sents, labels)
+    test('plus1', sents, labels)
+    test('embed', sents, labels)
