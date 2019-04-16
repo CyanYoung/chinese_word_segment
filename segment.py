@@ -115,8 +115,7 @@ def get_log(words, name):
 
 
 def predict(text, name, max_len):
-    sent = text.strip()
-    word1s, word2s = for_match(sent, max_len), back_match(sent, max_len)
+    word1s, word2s = for_match(text, max_len), back_match(text, max_len)
     if word1s == word2s:
         return ' '.join(word1s)
     else:
